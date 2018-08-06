@@ -1,0 +1,100 @@
+buildscript {
+	ext {
+		junitGradlePlugin = '1.0.2'
+		springBootVersion = '1.5.9.RELEASE'
+		managementPlugin = '0.5.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		maven {
+        	url 'https://repo.spring.io/libs-snapshot'
+    	}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "org.junit.platform:junit-platform-gradle-plugin:${junitGradlePlugin}"
+		classpath "io.spring.gradle:dependency-management-plugin:${managementPlugin}"
+	}
+}
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'org.junit.platform.gradle.plugin'
+apply plugin: "io.spring.dependency-management"
+
+group = 'org.cloud'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	maven { url 'https://jitpack.io' }
+	mavenLocal()
+}
+
+configurations {
+	//all{exclude group: 'com.google.guava', module:'guava-jdk5'}
+	//exclude group:'com.google.guava', module: 'guava-jdk5'
+	//all*.exclude group:'com.google.guava', module: 'guava-jdk5'
+	provideCompile
+	providedRuntime
+	
+}
+
+/*
+configurations.all{
+	exclude group:'com.google.guava', module: 'guava-jdk5'
+}*/
+
+ext{
+	//springCloudAWS= '1.2.2.BUILD-SNAPSHOT'
+	junitJupiterVersion  = '5.0.0'
+	gcloudStorage='1.15.0'
+	springJunitTest='1.0.2'
+	springCloudVersion = 'Edgware.SR1'
+	junit5MinorVersion='0.1'
+}
+
+dependencies {
+
+		compileOnly('org.projectlombok:lombok')
+ 		compile('org.springframework.boot:spring-boot-starter')
+ 		{
+       		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'  
+    	}
+ 
+ 		compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+ 		
+ 		compile('com.google.guava:guava:23.6-jre')
+ 		
+		compile('com.google.api-client:google-api-client:1.23.0')
+		{
+    		exclude group: 'com.google.guava', module: 'guava-jdk5'
+		}
+
+		// GCP Storage
+		implementation('com.google.cloud:google-cloud-storage:1.15.0')
+		{
+    		exclude group: 'com.google.guava', module: 'guava-jdk5'
+		}
+		
+		// AWS Storage
+		compile 'org.springframework.cloud:spring-cloud-starter-aws'
+
+    	testCompile("org.springframework.boot:spring-boot-starter-test")
+    	testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0")
+    	testCompile("com.github.sbrannen:spring-test-junit5:1.0.2")
+    	testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0")
+    	testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: "1.0.1"
+}
+
+dependencyManagement {
+    imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
+
